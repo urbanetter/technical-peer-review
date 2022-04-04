@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AssessmentsController!{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="display-1">Hoi {{ developer.name }}!</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Assessments</th>
+                <th scope="col">Progress</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for todo in todos %}
+            <tr>
+                <th scope="row"><a href="{{ path('app_assessments_developer', {'key': developer.key, 'id': todo.target}) }}">{{ todo.name }}</a></th>
+                <td>Done: {{ todo.current }} out of {{ todo.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

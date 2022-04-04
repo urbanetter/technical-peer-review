@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TeamsController!{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="display-1">Team {{ team.title }}!</h1>
+
+    <h2>Topics</h2>
+    {% for topic in team.topics %}
+        <div class="row">
+            <div class="col">{{ topic.name }}</div>
+        </div>
+    {% endfor %}
+
+    <h2>Developers</h2>
+    {% for developer in team.developers %}
+        <div class="row">
+            <div class="col">{{ developer.name }}</div>
+        </div>
+    {% endfor %}
+
+    <h2>Team average</h2>
+    {{ render_chart(chart) }}
+</div>
+{% endblock %}
