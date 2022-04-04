@@ -4,19 +4,27 @@
 
 {% block body %}
 <div class="container">
-    <h1 class="display-1">Hoi {{ developer.name }}!</h1>
+    <h1 class="display-1">{{ title }}</h1>
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Assessments</th>
-                <th scope="col">Progress</th>
+                <th scope="col">Topic</th>
+                <th scope="col">Assessment</th>
             </tr>
         </thead>
         <tbody>
-            {% for todo in todos %}
+            {% for assessment in assessments %}
             <tr>
-                <th scope="row"><a href="{{ path('app_assessments_developer', {'key': developer.key, 'id': todo.target}) }}">{{ todo.name }}</a></th>
-                <td>Done: {{ todo.current }} out of {{ todo.total }}</td>
+                <th scope="row">{{ assessment.topic.name }}</th>
+                <td>
+                    <div
+                        data-controller="assessment"
+                        data-assessment-url-value="{{ path('app_assessments_topic', {'key': assessment.source.key, 'id': assessment.target.id, 'topic': assessment.topic.id}) }}"
+                        class="btn-group"
+                    >
+                        {{ include('assessments/assessment.html.twig') }}
+                    </div>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
