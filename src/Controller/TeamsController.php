@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Team;
-use App\Entity\Topic;
+use App\Repository\TopicRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,18 +13,25 @@ use Symfony\UX\Chartjs\Model\Chart;
 class TeamsController extends AbstractController
 {
     #[Route('/teams/{name}', name: 'app_teams')]
-    public function index(Team $team, ChartBuilderInterface $chartBuilder): Response
+    public function index(Team $team): Response
+    {
+        return $this->render('teams/index.html.twig', [
+            'team' => $team,
+        ]);
+    }
+
+    #[Route('/teams/{name}/avg', name: 'app_teams_avg')]
+    public function avg(Team $team, ChartBuilderInterface $chartBuilder, TopicRepository $topicRepository): Response
     {
         $chart = $chartBuilder->createChart(Chart::TYPE_RADAR);
-        $values = [2,3,5,4];
-
+        $data = $topicRepository->teamAverages($team);
 
         $chart->setData([
-            'labels' => array_map(fn(Topic $topic) => $topic->getName(), $team->getTopics()->toArray()),
+            'labels' => array_map(fn($topic) => $topic['name'], $data),
             'datasets' => [
                 [
                     'label' => 'Team average',
-                    'data' => $values,
+                    'data' => array_map(fn($topic) => $topic['avg'], $data),
                 ]
             ]
         ]);
@@ -32,13 +39,13 @@ class TeamsController extends AbstractController
         $chart->setOptions([
             'scales' => [
                 'r' => [
-                    'min' => 0,
-                    'max' => max($values),
+                    'min' => 1,
+                    'max' => 5,
                 ]
             ]
         ]);
 
-        return $this->render('teams/index.html.twig', [
+        return $this->render('teams/avg.html.twig', [
             'team' => $team,
             'chart' => $chart,
         ]);

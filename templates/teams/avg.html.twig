@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TeamsController!{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="display-1">Team {{ team.title }}!</h1>
+    {{ render_chart(chart) }}
+</div>
+{% endblock %}

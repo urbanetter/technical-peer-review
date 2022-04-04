@@ -4,9 +4,19 @@ namespace App;
 
 use App\Entity\Assessment;
 use App\Entity\Developer;
+use App\Entity\Team;
+use App\Entity\Topic;
+use App\Repository\AssessmentRepository;
+use App\Repository\TopicRepository;
 
 class TechnicalPeerFeedback
 {
+    public function __construct(
+        private AssessmentRepository $assessmentRepository,
+        private TopicRepository $topicRepository
+    )
+    {
+    }
 
     public function getTodos(Developer $developer): array
     {
@@ -32,5 +42,50 @@ class TechnicalPeerFeedback
         }
 
         return $todos;
+    }
+
+    public function getNextTarget(Developer $source): ?Developer
+    {
+        $assessments = $source->getAssessments()->toArray();
+        $topicsCount = $source->getTeam()->getTopics()->count();
+        $targets = $source->getTeam()->getDevelopers();
+
+        $targetCounts = [];
+        foreach ($assessments as $assessment) {
+            /** @var Assessment $assessment */
+            $targetId = $assessment->getTarget()->getId();
+            $targetCounts[$targetId] = ($targetCounts[$targetId] ?? 0) + 1;
+        }
+
+        foreach ($targets as $target) {
+            $targetId = $target->getId();
+            if (($targetCounts[$targetId] ?? 0) < $topicsCount) {
+                return $target;
+            }
+        }
+        return null;
+    }
+
+    public function getAssessment(Developer $source, Developer $target, Topic $topic): Assessment
+    {
+        $assessment = $this->assessmentRepository->findOneBy([
+            'source' => $source,
+            'target' => $target,
+            'topic' => $topic
+        ]);
+
+        if (!$assessment) {
+            $assessment = new Assessment();
+            $assessment->setSource($source);
+            $assessment->setTarget($target);
+            $assessment->setTopic($topic);
+        }
+
+        return $assessment;
+    }
+
+    public function getTopicAverages(Team $team)
+    {
+        return $this->topicRepository->teamAverages($team);
     }
 }

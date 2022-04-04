@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TopicRepository::class)]
-class Topic implements \Stringable
+class Topic
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -87,10 +87,5 @@ class Topic implements \Stringable
         }
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return (string) $this->id ?? $this->name;
     }
 }

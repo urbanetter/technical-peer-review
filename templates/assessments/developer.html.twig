@@ -19,7 +19,7 @@
                 <td>
                     <div
                         data-controller="assessment"
-                        data-assessment-url-value="{{ path('app_assessments_topic', {'key': assessment.source.key, 'id': assessment.target.id, 'topic': assessment.topic.id}) }}"
+                        data-assessment-url-value="{{ path('app_assessments_topic', {'source': assessment.source.key, 'target': assessment.target.id, 'topic': assessment.topic.id}) }}"
                         class="btn-group"
                     >
                         {{ include('assessments/assessment.html.twig') }}
@@ -29,5 +29,9 @@
             {% endfor %}
         </tbody>
     </table>
+    <div class="d-flex flex-row-reverse">
+        <a href="{{ path('app_assessments', {'key': source.key}) }}" class="btn btn-primary">Back</a>
+    </div>
+
 </div>
 {% endblock %}

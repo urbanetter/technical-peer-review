@@ -2,18 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Assessment;
 use App\Entity\Developer;
-use App\Form\AssessmentType;
-use App\Repository\AssessmentRepository;
+use App\Entity\Topic;
 use App\Repository\DeveloperRepository;
 use App\Repository\TopicRepository;
 use App\TechnicalPeerFeedback;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,59 +21,50 @@ class AssessmentsController extends AbstractController
         return $this->render('assessments/index.html.twig', [
             'developer' => $developer,
             'todos' => $technicalPeerFeedback->getTodos($developer),
+            'next' => $technicalPeerFeedback->getNextTarget($developer)
         ]);
     }
 
-    #[Route('/assessments/{key}/for/{id}', name: 'app_assessments_developer')]
-    public function developer(string $key, string $id, DeveloperRepository $developerRepository, AssessmentRepository $assessmentRepository): Response
+    #[Route('/assessments/{source}/for/{target}', name: 'app_assessments_developer')]
+    public function developer(
+        string $source,
+        string $target,
+        DeveloperRepository $developerRepository,
+        TechnicalPeerFeedback $technicalPeerFeedback,
+    ): Response
     {
-        $source = $developerRepository->findOneBy(['key' => $key]);
-        $target = $developerRepository->find($id);
+        $source = $developerRepository->findOneBy(['key' => $source]);
+        $target = $developerRepository->find($target);
 
         $title = ($source->getId() === $target->getId()) ? "Self assessment" : "Assessment of " . $target->getName();
         $topics = $source->getTeam()->getTopics();
 
-        $assessments = $assessmentRepository->findBy([
-            'source' => $source,
-            'target' => $target,
-        ]);
-
-        $assessedTopics = array_map(fn(Assessment $assessment) => $assessment->getTopic(), $assessments);
-        $unassessed = array_diff($topics->toArray(), $assessedTopics);
-
-        foreach ($unassessed as $topic) {
-            $newAssessment = new Assessment();
-            $newAssessment->setSource($source);
-            $newAssessment->setTarget($target);
-            $newAssessment->setTopic($topic);
-            $assessments[] = $newAssessment;
-        }
+        $assessments = array_map(fn(Topic $topic) => $technicalPeerFeedback->getAssessment($source, $target, $topic), $topics->toArray());
 
         return $this->render('assessments/developer.html.twig', [
             'title' => $title,
+            'source' => $source,
             'assessments' => $assessments,
         ]);
     }
 
-    #[Route('/assessments/{key}/for/{id}/topic/{topic}', name: 'app_assessments_topic', methods: ['PUT'])]
-    public function assessment(Request $request, string $key, string $id, string $topic, DeveloperRepository $developerRepository, TopicRepository $topicRepository, AssessmentRepository $assessmentRepository, EntityManagerInterface $entityManager)
+    #[Route('/assessments/{source}/for/{target}/topic/{topic}', name: 'app_assessments_topic', methods: ['PUT'])]
+    public function assessment(
+        Request $request,
+        string $source,
+        string $target,
+        string $topic,
+        DeveloperRepository $developerRepository,
+        TopicRepository $topicRepository,
+        TechnicalPeerFeedback $technicalPeerFeedback,
+        EntityManagerInterface $entityManager,
+    ): Response
     {
-        $source = $developerRepository->findOneBy(['key' => $key]);
-        $target = $developerRepository->find($id);
+        $source = $developerRepository->findOneBy(['key' => $source]);
+        $target = $developerRepository->find($target);
         $topic = $topicRepository->find($topic);
 
-        $assessment = $assessmentRepository->findOneBy([
-            'source' => $source,
-            'target' => $target,
-            'topic' => $topic
-        ]);
-
-        if (!$assessment) {
-            $assessment = new Assessment();
-            $assessment->setSource($source);
-            $assessment->setTarget($target);
-            $assessment->setTopic($topic);
-        }
+        $assessment = $technicalPeerFeedback->getAssessment($source, $target, $topic);
 
         $value = $request->getContent();
 

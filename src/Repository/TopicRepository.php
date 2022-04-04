@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Team;
 use App\Entity\Topic;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -43,6 +44,18 @@ class TopicRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    public function teamAverages(Team $team)
+    {
+        return $this->createQueryBuilder('t')
+            ->select('MAX(t.id) AS id, MAX(t.name) AS name, AVG(a.value) AS avg')
+            ->where('t.team = :team')
+            ->setParameter('team', $team)
+            ->join('t.assessments', 'a')
+            ->groupBy('a.topic')
+            ->getQuery()
+            ->getResult();
     }
 
     // /**
