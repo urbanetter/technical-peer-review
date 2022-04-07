@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Assessment;
+use App\Entity\Developer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -45,32 +46,19 @@ class AssessmentRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Assessment[] Returns an array of Assessment objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Assessment[] Returns an array of Assessment objects
+     */
+    public function selfAssessments(Developer $developer)
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
+            ->andWhere('a.source = :developer')
+            ->andWhere('a.target = :developer')
+            ->setParameter('developer', $developer)
+            ->orderBy('a.id')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Assessment
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

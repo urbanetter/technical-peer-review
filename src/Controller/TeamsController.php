@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Team;
 use App\Repository\TopicRepository;
+use App\TechnicalPeerFeedback;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,10 +14,12 @@ use Symfony\UX\Chartjs\Model\Chart;
 class TeamsController extends AbstractController
 {
     #[Route('/teams/{name}', name: 'app_teams')]
-    public function index(Team $team): Response
+    public function index(Team $team, TechnicalPeerFeedback $technicalPeerFeedback): Response
     {
         return $this->render('teams/index.html.twig', [
             'team' => $team,
+            'topics' => $technicalPeerFeedback->getTopicTodos($team),
+            'developers' => $technicalPeerFeedback->getDeveloperTodos($team),
         ]);
     }
 
@@ -42,7 +45,8 @@ class TeamsController extends AbstractController
                     'min' => 1,
                     'max' => 5,
                 ]
-            ]
+            ],
+
         ]);
 
         return $this->render('teams/avg.html.twig', [

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Developer;
 use App\Entity\Team;
 use App\Entity\Topic;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -22,30 +23,6 @@ class TopicRepository extends ServiceEntityRepository
         parent::__construct($registry, Topic::class);
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function add(Topic $entity, bool $flush = true): void
-    {
-        $this->_em->persist($entity);
-        if ($flush) {
-            $this->_em->flush();
-        }
-    }
-
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function remove(Topic $entity, bool $flush = true): void
-    {
-        $this->_em->remove($entity);
-        if ($flush) {
-            $this->_em->flush();
-        }
-    }
-
     public function teamAverages(Team $team)
     {
         return $this->createQueryBuilder('t')
@@ -54,36 +31,22 @@ class TopicRepository extends ServiceEntityRepository
             ->setParameter('team', $team)
             ->join('t.assessments', 'a')
             ->groupBy('a.topic')
+            ->orderBy('t.id')
             ->getQuery()
             ->getResult();
     }
 
-    // /**
-    //  * @return Topic[] Returns an array of Topic objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function external(Developer $developer)
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
+            ->select('MAX(t.id) AS id, MAX(t.name) AS name, AVG(a.value) AS avg')
+            ->where('a.target = :developer')
+            ->andWhere('a.source <> :developer')
+            ->setParameter('developer', $developer)
+            ->join('t.assessments', 'a')
+            ->groupBy('a.topic')
+            ->orderBy('t.id')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Topic
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello TeamsController!{% endblock %}
+{% block title %}Spider of {{ developer.name }}{% endblock %}
 
 {% block body %}
 <div class="container">
-    <h1 class="display-1">Team {{ team.title }}!</h1>
+    <h1 class="display-1">{{ developer.name }}!</h1>
     <div style="width: 600px; height: 600px;">
         {{ render_chart(chart) }}
     </div>

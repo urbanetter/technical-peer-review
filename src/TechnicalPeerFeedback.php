@@ -44,6 +44,26 @@ class TechnicalPeerFeedback
         return $todos;
     }
 
+    public function getTopicTodos(Team $team): array
+    {
+        $total = $team->getDevelopers()->count() * ($team->getTopics()->count() - 1);
+        return array_map(fn(Topic $topic) => [
+            'name' => $topic->getName(),
+            'current' => $topic->getAssessments()->count(),
+            'total' => $total,
+        ], $team->getTopics()->toArray());
+    }
+
+    public function getDeveloperTodos(Team $team): array
+    {
+        $total = $team->getTopics()->count() * $team->getDevelopers()->count();
+        return array_map(fn(Developer $developer) => [
+            'name' => $developer->getName(),
+            'current' => $developer->getAssessments()->count(),
+            'total' => $total,
+        ], $team->getDevelopers()->toArray());
+    }
+
     public function getNextTarget(Developer $source): ?Developer
     {
         $assessments = $source->getAssessments()->toArray();
