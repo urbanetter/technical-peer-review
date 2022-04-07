@@ -29,8 +29,8 @@ class AssessmentsController extends AbstractController
         ]);
     }
 
-    #[Route('/assessments/{key}/spider', name: 'app_assessments_spider')]
-    public function spider(Developer $developer, ChartBuilderInterface $chartBuilder, TopicRepository $topicRepository, AssessmentRepository $assessmentRepository)
+    #[Route('/spider/{key}', name: 'app_spider')]
+    public function spider(Developer $developer, ChartBuilderInterface $chartBuilder, TopicRepository $topicRepository, AssessmentRepository $assessmentRepository): Response
     {
         $chart = $chartBuilder->createChart(Chart::TYPE_RADAR);
         $teamAverage = $topicRepository->teamAverages($developer->getTeam());
@@ -71,7 +71,7 @@ class AssessmentsController extends AbstractController
 
         ]);
 
-        return $this->render('assessments/avg.html.twig', [
+        return $this->render('assessments/spider.html.twig', [
             'developer' => $developer,
             'chart' => $chart,
         ]);
@@ -87,6 +87,10 @@ class AssessmentsController extends AbstractController
     {
         $source = $developerRepository->findOneBy(['key' => $source]);
         $target = $developerRepository->find($target);
+
+        if ($target->getTeam()->getId() !== $source->getTeam()->getId()) {
+            throw $this->createAccessDeniedException('Nope');
+        }
 
         $title = ($source->getId() === $target->getId()) ? "Self assessment" : "Assessment of " . $target->getName();
         $topics = $source->getTeam()->getTopics();
@@ -115,6 +119,10 @@ class AssessmentsController extends AbstractController
         $source = $developerRepository->findOneBy(['key' => $source]);
         $target = $developerRepository->find($target);
         $topic = $topicRepository->find($topic);
+
+        if ($target->getTeam()->getId() !== $source->getTeam()->getId()) {
+            throw $this->createAccessDeniedException('Nope');
+        }
 
         $assessment = $technicalPeerFeedback->getAssessment($source, $target, $topic);
 
