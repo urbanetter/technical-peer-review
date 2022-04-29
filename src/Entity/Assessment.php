@@ -26,55 +26,55 @@ class Assessment
     private Topic $topic;
 
     #[ORM\Column(type: 'integer')]
-    private int $value;
+    private int $value = 0;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getSource(): ?Developer
+    public function getSource(): Developer
     {
         return $this->source;
     }
 
-    public function setSource(?Developer $source): self
+    public function setSource(Developer $source): self
     {
         $this->source = $source;
 
         return $this;
     }
 
-    public function getTarget(): ?Developer
+    public function getTarget(): Developer
     {
         return $this->target;
     }
 
-    public function setTarget(?Developer $target): self
+    public function setTarget(Developer $target): self
     {
         $this->target = $target;
 
         return $this;
     }
 
-    public function getTopic(): ?Topic
+    public function getTopic(): Topic
     {
         return $this->topic;
     }
 
-    public function setTopic(?Topic $topic): self
+    public function setTopic(Topic $topic): self
     {
         $this->topic = $topic;
 
         return $this;
     }
 
-    public function getValue(): ?string
+    public function getValue(): int
     {
         return $this->value;
     }
 
-    public function setValue(string $value): self
+    public function setValue(int $value): self
     {
         $this->value = $value;
 
