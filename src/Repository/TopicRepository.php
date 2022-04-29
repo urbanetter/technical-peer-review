@@ -28,7 +28,7 @@ class TopicRepository extends ServiceEntityRepository
             ->where('t.team = :team')
             ->setParameter('team', $team)
             ->join('t.assessments', 'a')
-            ->groupBy('a.topic')
+            ->groupBy('a.topic, t.id')
             ->orderBy('t.id')
             ->getQuery()
             ->getResult();
@@ -42,7 +42,7 @@ class TopicRepository extends ServiceEntityRepository
             ->andWhere('a.source <> :developer')
             ->setParameter('developer', $developer)
             ->join('t.assessments', 'a')
-            ->groupBy('a.topic')
+            ->groupBy('a.topic, t.id')
             ->orderBy('t.id')
             ->getQuery()
             ->getResult();
