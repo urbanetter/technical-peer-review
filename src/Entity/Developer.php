@@ -13,17 +13,17 @@ class Developer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private string $name;
 
     #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'developers')]
     #[ORM\JoinColumn(nullable: false)]
-    private $team;
+    private Team $team;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $key;
+    private string $key;
 
     #[ORM\OneToMany(mappedBy: 'source', targetEntity: Assessment::class, orphanRemoval: true)]
     private $assessments;

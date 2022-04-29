@@ -13,14 +13,14 @@ class Topic
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private string $name;
 
     #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'topics')]
     #[ORM\JoinColumn(nullable: false)]
-    private $team;
+    private Team $team;
 
     #[ORM\OneToMany(mappedBy: 'topic', targetEntity: Assessment::class, orphanRemoval: true)]
     private $assessments;

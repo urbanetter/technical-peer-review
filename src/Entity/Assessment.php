@@ -11,22 +11,22 @@ class Assessment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Developer::class, inversedBy: 'assessments')]
     #[ORM\JoinColumn(nullable: false)]
-    private $source;
+    private Developer $source;
 
     #[ORM\ManyToOne(targetEntity: Developer::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $target;
+    private Developer $target;
 
     #[ORM\ManyToOne(targetEntity: Topic::class, inversedBy: 'assessments')]
     #[ORM\JoinColumn(nullable: false)]
-    private $topic;
+    private Topic $topic;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $value;
+    #[ORM\Column(type: 'integer')]
+    private int $value;
 
     public function getId(): ?int
     {

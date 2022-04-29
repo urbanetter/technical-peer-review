@@ -13,16 +13,16 @@ class Team
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $title;
+    private string $title;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $state;
+    private string $state;
 
     #[ORM\OneToMany(mappedBy: 'team', targetEntity: Developer::class, orphanRemoval: true)]
     private $developers;

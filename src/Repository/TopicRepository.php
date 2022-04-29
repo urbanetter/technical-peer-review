@@ -6,8 +6,6 @@ use App\Entity\Developer;
 use App\Entity\Team;
 use App\Entity\Topic;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
