@@ -74,7 +74,7 @@ class AssessmentsController extends AbstractController
 
         $assessment = $technicalPeerFeedback->getAssessment($source, $target, $topic);
 
-        $value = $request->getContent();
+        $value = (int) $request->getContent();
 
         $assessment->setValue($value);
         $entityManager->persist($assessment);

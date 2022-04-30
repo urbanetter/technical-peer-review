@@ -7,13 +7,11 @@ use App\Entity\Developer;
 use App\Entity\Team;
 use App\Entity\Topic;
 use App\Repository\AssessmentRepository;
-use App\Repository\TopicRepository;
 
 class TechnicalPeerFeedback
 {
     public function __construct(
         private AssessmentRepository $assessmentRepository,
-        private TopicRepository $topicRepository
     )
     {
     }
@@ -104,8 +102,4 @@ class TechnicalPeerFeedback
         return $assessment;
     }
 
-    public function getTopicAverages(Team $team)
-    {
-        return $this->topicRepository->teamAverages($team);
-    }
 }
