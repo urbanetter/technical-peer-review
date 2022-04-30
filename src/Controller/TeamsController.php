@@ -34,7 +34,7 @@ class TeamsController extends AbstractController
             'datasets' => [
                 [
                     'label' => 'Team average',
-                    'data' => array_map(fn($topic) => $topic['avg'], $data),
+                    'data' => array_map(fn($topic) => $topic['average'], $data),
                 ]
             ]
         ]);
