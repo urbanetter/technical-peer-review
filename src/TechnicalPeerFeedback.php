@@ -46,7 +46,7 @@ class TechnicalPeerFeedback
 
     public function getTopicTodos(Team $team): array
     {
-        $total = $team->getDevelopers()->count() * ($team->getTopics()->count() - 1);
+        $total = pow($team->getDevelopers()->count(), 2);
         return array_map(fn(Topic $topic) => [
             'name' => $topic->getName(),
             'current' => $topic->getAssessments()->count(),
