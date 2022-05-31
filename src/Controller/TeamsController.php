@@ -23,7 +23,7 @@ class TeamsController extends AbstractController
         ]);
     }
 
-    #[Route('/teams/{name}/avg', name: 'app_teams_avg')]
+    #[Route('/teams/{name}/spider', name: 'app_teams_spider')]
     public function avg(Team $team, ChartBuilderInterface $chartBuilder, TopicRepository $topicRepository): Response
     {
         $chart = $chartBuilder->createChart(Chart::TYPE_RADAR);
@@ -33,8 +33,22 @@ class TeamsController extends AbstractController
             'labels' => array_map(fn($topic) => $topic['name'], $data),
             'datasets' => [
                 [
+                    'label' => 'Max value',
+                    'data' => array_map(fn($topic) => $topic['max'], $data),
+                    'borderColor' => 'rgba(234, 191, 203, 1)',
+                    'backgroundColor' => 'rgba(234, 191, 203, 0.2)',
+                ],
+                [
+                    'label' => 'Min value',
+                    'data' => array_map(fn($topic) => $topic['min'], $data),
+                    'borderColor' => 'rgba(193, 145, 161, 1)',
+                    'backgroundColor' => 'rgba(193, 145, 161, 0.2)',
+                ],
+                [
                     'label' => 'Team average',
                     'data' => array_map(fn($topic) => $topic['average'], $data),
+                    'borderColor' => 'rgba(164, 80, 139, 1)',
+                    'backgroundColor' => 'rgba(164, 80, 139, 0.2)',
                 ]
             ]
         ]);
@@ -49,7 +63,7 @@ class TeamsController extends AbstractController
 
         ]);
 
-        return $this->render('teams/avg.html.twig', [
+        return $this->render('teams/spider.html.twig', [
             'team' => $team,
             'chart' => $chart,
         ]);

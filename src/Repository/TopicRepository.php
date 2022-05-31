@@ -24,7 +24,7 @@ class TopicRepository extends ServiceEntityRepository
     public function teamAverages(Team $team)
     {
         return $this->createQueryBuilder('t')
-            ->select('MAX(t.id) AS id, MAX(t.name) AS name, AVG(a.value) AS average')
+            ->select('MAX(t.id) AS id, MAX(t.name) AS name, AVG(a.value) AS average, MIN(a.value) AS min, MAX(a.value) AS max')
             ->where('t.team = :team')
             ->setParameter('team', $team)
             ->join('t.assessments', 'a')
