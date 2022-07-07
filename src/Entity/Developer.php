@@ -28,9 +28,13 @@ class Developer
     #[ORM\OneToMany(mappedBy: 'source', targetEntity: Assessment::class, orphanRemoval: true)]
     private $assessments;
 
+    #[ORM\OneToMany(mappedBy: 'developer', targetEntity: Confidence::class, orphanRemoval: true)]
+    private $confidences;
+
     public function __construct()
     {
         $this->assessments = new ArrayCollection();
+        $this->confidences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,6 +102,36 @@ class Developer
             // set the owning side to null (unless already changed)
             if ($assessment->getSource() === $this) {
                 $assessment->setSource(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Confidence>
+     */
+    public function getConfidences(): Collection
+    {
+        return $this->confidences;
+    }
+
+    public function addConfidence(Confidence $confidence): self
+    {
+        if (!$this->confidences->contains($confidence)) {
+            $this->confidences[] = $confidence;
+            $confidence->setDeveloper($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConfidence(Confidence $confidence): self
+    {
+        if ($this->confidences->removeElement($confidence)) {
+            // set the owning side to null (unless already changed)
+            if ($confidence->getDeveloper() === $this) {
+                $confidence->setDeveloper(null);
             }
         }
 

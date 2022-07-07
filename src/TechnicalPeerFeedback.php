@@ -102,4 +102,20 @@ class TechnicalPeerFeedback
         return $assessment;
     }
 
+    public function getConfidences(Developer $developer): array
+    {
+        $topics = $developer->getTeam()->getTopics();
+        $confidences = $developer->getConfidences();
+        $confidencePerTopic = [];
+        foreach ($confidences as $confidence) {
+            $confidencePerTopic[$confidence->getTopic()->getId()] = $confidence->getConfidence();
+        }
+
+        return array_map(fn(Topic $topic) => [
+            'id' => $topic->getId(),
+            'name' => $topic->getName(),
+            'value' => $confidencePerTopic[$topic->getId()] ?? 0
+        ], $topics->toArray());
+    }
+
 }
