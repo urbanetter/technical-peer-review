@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Confidence;
+use App\Entity\Team;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,28 +40,13 @@ class ConfidenceRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Confidence[] Returns an array of Confidence objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Confidence
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findByTeam(Team $team)
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.topic', 't')
+            ->where('t.team = :team')
+            ->setParameter('team', $team)
+            ->getQuery()
+            ->getResult();
+    }
 }

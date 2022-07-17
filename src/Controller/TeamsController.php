@@ -68,4 +68,14 @@ class TeamsController extends AbstractController
             'chart' => $chart,
         ]);
     }
+
+    #[Route('/teams/{name}/confidence', name: 'app_teams_bubbles')]
+    public function bubbles(Team $team, TechnicalPeerFeedback $technicalPeerFeedback): Response
+    {
+        $data = $technicalPeerFeedback->teamConfidences($team);
+        return $this->render('teams/confidence.html.twig', [
+            'team' => $team,
+            'data' => $data,
+        ]);
+    }
 }

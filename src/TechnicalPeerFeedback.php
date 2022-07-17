@@ -7,11 +7,13 @@ use App\Entity\Developer;
 use App\Entity\Team;
 use App\Entity\Topic;
 use App\Repository\AssessmentRepository;
+use App\Repository\ConfidenceRepository;
 
 class TechnicalPeerFeedback
 {
     public function __construct(
         private AssessmentRepository $assessmentRepository,
+        private ConfidenceRepository $confidenceRepository,
     )
     {
     }
@@ -118,4 +120,16 @@ class TechnicalPeerFeedback
         ], $topics->toArray());
     }
 
+    public function teamConfidences(Team $team): array
+    {
+        $confidences = $this->confidenceRepository->findByTeam($team);
+        $result = [];
+        foreach ($confidences as $confidence) {
+            $topicId = $confidence->getTopic()->getId();
+            $result[$topicId][$confidence->getConfidence()] ??= 0;
+            $result[$topicId][$confidence->getConfidence()]++;
+        }
+
+        return $result;
+    }
 }
