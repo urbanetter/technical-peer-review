@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TeamRepository;
+use App\TeamState;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -65,14 +66,18 @@ class Team
         return $this;
     }
 
-    public function getState(): ?string
+    public function getState(): TeamState
     {
-        return $this->state;
+        $result = TeamState::tryFrom($this->state);
+        if (!$result) {
+            $result = TeamState::PEER_FEEDBACK;
+        }
+        return $result;
     }
 
-    public function setState(string $state): self
+    public function setState(TeamState $state): self
     {
-        $this->state = $state;
+        $this->state = $state->value;
 
         return $this;
     }

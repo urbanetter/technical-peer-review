@@ -46,22 +46,39 @@ class TechnicalPeerFeedback
 
     public function getTopicTodos(Team $team): array
     {
-        $total = pow($team->getDevelopers()->count(), 2);
-        return array_map(fn(Topic $topic) => [
-            'name' => $topic->getName(),
-            'current' => $topic->getAssessments()->count(),
-            'total' => $total,
-        ], $team->getTopics()->toArray());
+        if ($team->getState() === TeamState::PEER_FEEDBACK) {
+            $total = pow($team->getDevelopers()->count(), 2);
+            return array_map(fn(Topic $topic) => [
+                'name' => $topic->getName(),
+                'current' => $topic->getAssessments()->count(),
+                'total' => $total,
+            ], $team->getTopics()->toArray());
+        } else {
+            return array_map(fn(Topic $topic) => [
+                'name' => $topic->getName(),
+                'current' => 1,
+                'total' => 1,
+            ], $team->getTopics()->toArray());
+        }
     }
 
     public function getDeveloperTodos(Team $team): array
     {
-        $total = $team->getTopics()->count() * $team->getDevelopers()->count();
-        return array_map(fn(Developer $developer) => [
-            'name' => $developer->getName(),
-            'current' => $developer->getAssessments()->count(),
-            'total' => $total,
-        ], $team->getDevelopers()->toArray());
+        if ($team->getState() === TeamState::PEER_FEEDBACK) {
+            $total = $team->getTopics()->count() * $team->getDevelopers()->count();
+            return array_map(fn(Developer $developer) => [
+                'name' => $developer->getName(),
+                'current' => $developer->getAssessments()->count(),
+                'total' => $total,
+            ], $team->getDevelopers()->toArray());
+        } else {
+            $total = $team->getTopics()->count();
+            return array_map(fn(Developer $developer) => [
+                'name' => $developer->getName(),
+                'current' => $developer->getConfidences()->count(),
+                'total' => $total,
+            ], $team->getDevelopers()->toArray());
+        }
     }
 
     public function getNextTarget(Developer $source): ?Developer
