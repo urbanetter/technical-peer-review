@@ -1,1 +1,33 @@
 @import "~bootstrap";
+
+.dot {
+    background-color: #CCD6A6;
+    border-radius: 50%;
+}
+
+.dot-container {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contains-dots {
+    height: 45px;
+}
+
+.dot.size-1 {
+    width: 15px;
+    height: 15px;
+}
+
+.dot.size-2 {
+    width: 20px;
+    height: 20px;
+}
+
+.dot.size-3 {
+    width: 30px;
+    height: 30px;
+}

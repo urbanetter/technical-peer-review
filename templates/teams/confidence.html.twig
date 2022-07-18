@@ -3,10 +3,10 @@
 {% block title %}Technical Peer Review {{ team.title }}{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container pt-5">
         <h1 class="display-1">Confidence of {{ team.title }}!</h1>
 
-        <table class="table">
+        <table class="table mt-5">
             <thead>
             <tr>
                 <th scope="col">Confidence</th>
@@ -27,8 +27,10 @@
                         {% endfor %}
                     </th>
                     {% for topic in team.topics %}
-                    <td>
-                        {{ data[topic.id][i]|default(0) }}
+                    <td class="contains-dots">
+                        {% if data[topic.id][i] is defined %}
+                            {{ include('teams/dot.html.twig', {'size': data[topic.id][i], 'tooltip': data[topic.id][i] ~ ' developers'}) }}
+                        {% endif %}
                     </td>
                     {% endfor %}
                 </tr>
