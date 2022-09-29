@@ -28,6 +28,11 @@
 }
 
 .dot.size-3 {
+    width: 25px;
+    height: 25px;
+}
+
+.dot.size-4 {
     width: 30px;
     height: 30px;
 }
